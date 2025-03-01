@@ -141,6 +141,30 @@ export const UserContextProvider = ({ children }) => {
     }
   }
 
+  //get user details 
+  const getUser = async () => {
+    setLoading(true); 
+    try {
+      const res = await axios.get(`${serverUrl}/api/v1/profile`, {
+        withCredentials: true, //send cookies
+      }); 
+
+      setUser((prevState) => {
+        return{
+          ...prevState, 
+          ...res.data,
+        }
+      }); 
+
+      setLoading(false); 
+
+    } catch (error) {
+      console.log("error getting user details", error);
+      setLoading(false); 
+      toast.error(error.response.data.message); 
+    }
+  }
+
   //dynamic form handler
   const handlerUserInput = (name) => (e) => {
     const value = e.target.value;
@@ -153,8 +177,14 @@ export const UserContextProvider = ({ children }) => {
 
   //initial render
   useEffect(() => {
-    userLoginStatus();
-  }, [userState]);
+    const loginStatusGetUser = async () => {
+      const isLoggedIn = await userLoginStatus();
+
+      if (isLoggedIn){
+        getUser();
+      }
+    };
+  }, [user]);
 
   return (
     <UserContext.Provider

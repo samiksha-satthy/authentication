@@ -1,9 +1,13 @@
 "use client";
 import { useUserContext } from "@/context/userContext";
+import useRedirect from "@/hooks/constUserRedirect";
+
 
 export default function Home() {
+  useRedirect("/login"); 
   const { logoutUser } = useUserContext();
   const name = "samiksha";
+  
   return (
     <main className="py-[2rem] mx-[10-rem]">
       <header className="flex justify-between">
