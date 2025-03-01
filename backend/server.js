@@ -9,7 +9,7 @@ import errorHandler from './src/helpers/errorHandler.js';
 
 dotenv.config();
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 
 const app = express();
 
@@ -30,7 +30,7 @@ const routeFiles = fs.readdirSync('./src/routes');
 routeFiles.forEach((file) => {
     //use dynamic import
     import(`./src/routes/${file}`).then((route) => {
-        app.use("", route.default);
+        app.use("/api/v1", route.default);
     }).catch((err) => { 
         console.log("Failed to load route", err);
     });
