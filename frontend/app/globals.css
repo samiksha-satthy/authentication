@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+
+.auth-page{
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+    background: url("/glass-bg.png") no-repeat center center fixed;
+    
+}
