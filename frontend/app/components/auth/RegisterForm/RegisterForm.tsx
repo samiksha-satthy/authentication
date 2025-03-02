@@ -97,6 +97,7 @@ function RegisterForm() {
         <div className="flex">
           <button
             type="submit"
+            disabled={!email || !password || !name}
             onClick={registerUser}
             className="mt-[1.5rem] flex-1 px-4 py-3 font-bold bg-[#2ECC71] text-white rounded-md hover:bg-[#1abc9c] transition-colors"
           >

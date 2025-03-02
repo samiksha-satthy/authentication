@@ -22,14 +22,34 @@ export const UserContextProvider = ({ children }) => {
 
   const [loading, setLoading] = useState(false);
 
+    //get user details 
+    const getUser = async () => {
+      setLoading(true); 
+      try {
+        const res = await axios.get(`${serverUrl}/api/v1/profile`, {
+          withCredentials: true, //send cookies
+        }); 
+  
+        setUser((prevState) => {
+          return{
+            ...prevState, 
+            ...res.data,
+          }
+        }); 
+  
+        setLoading(false); 
+  
+      } catch (error) {
+        console.log("error getting user details", error);
+        setLoading(false); 
+        toast.error(error.response.data.message); 
+      }
+    }
+
   //register user
   const registerUser = async (e) => {
     e.preventDefault();
-
-    if (!userState.name || !userState.password || !userState.email) {
-      toast.error("please fill in all fields");
-      return;
-    } else if (
+    if (
       !userState.password ||
       !userState.email.includes("@") ||
       userState.password.length < 6
@@ -58,11 +78,6 @@ export const UserContextProvider = ({ children }) => {
   const loginUser = async (e) => {
     e.preventDefault();
 
-    if (!userState.email || !userState.password) {
-      toast.error("please fill in all fields");
-      return;
-    }
-
     try {
       const res = await axios.post(
         `${serverUrl}/api/v1/login`,
@@ -82,6 +97,8 @@ export const UserContextProvider = ({ children }) => {
         email: "",
         password: "",
       });
+
+      await getUser();
 
       //push user to dashboard page
       router.push("/");
@@ -141,30 +158,6 @@ export const UserContextProvider = ({ children }) => {
     }
   }
 
-  //get user details 
-  const getUser = async () => {
-    setLoading(true); 
-    try {
-      const res = await axios.get(`${serverUrl}/api/v1/profile`, {
-        withCredentials: true, //send cookies
-      }); 
-
-      setUser((prevState) => {
-        return{
-          ...prevState, 
-          ...res.data,
-        }
-      }); 
-
-      setLoading(false); 
-
-    } catch (error) {
-      console.log("error getting user details", error);
-      setLoading(false); 
-      toast.error(error.response.data.message); 
-    }
-  }
-
   //update user details
   const updateUser = async (e, data) => {
     e.preventDefault();
@@ -191,7 +184,7 @@ export const UserContextProvider = ({ children }) => {
       toast.error(error.response.data.message); 
       
     }
-  }
+  }; 
 
   //dynamic form handler
   const handlerUserInput = (name) => (e) => {
