@@ -165,6 +165,34 @@ export const UserContextProvider = ({ children }) => {
     }
   }
 
+  //update user details
+  const updateUser = async (e, data) => {
+    e.preventDefault();
+    setLoading(true); 
+
+    try {
+      const res = await axios.patch(`${serverUrl}/api/v1/update`, data, {
+        withCredentials: true,
+      });
+
+      //update user state
+      setUser((prevState) => {
+        return {
+          ...prevState, 
+          ...res.data,
+        };
+      });
+
+      toast.success("user updated successfully")
+
+      setLoading(false); 
+    } catch (error) {
+      setLoading(false); 
+      toast.error(error.response.data.message); 
+      
+    }
+  }
+
   //dynamic form handler
   const handlerUserInput = (name) => (e) => {
     const value = e.target.value;
@@ -179,16 +207,19 @@ export const UserContextProvider = ({ children }) => {
   useEffect(() => {
     const loginStatusGetUser = async () => {
       const isLoggedIn = await userLoginStatus();
+      console.log("isLoggedIn", isLoggedIn);
 
       if (isLoggedIn){
         getUser();
       }
     };
-  }, [user]);
+
+    loginStatusGetUser();
+  }, []);
 
   return (
     <UserContext.Provider
-      value={{ registerUser, userState, handlerUserInput, loginUser, logoutUser, }}
+      value={{ registerUser, userState, handlerUserInput, loginUser, logoutUser, userLoginStatus, user, updateUser, }}
     >
       {children}
     </UserContext.Provider>

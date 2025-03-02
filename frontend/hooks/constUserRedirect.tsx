@@ -12,9 +12,10 @@ const useRedirect = ( redirect: string) => {
         const redirectUser = async () => {
             try {
                 const isLoggedUser = await userLoginStatus(); 
-                console.log("isLoggedUser", isLoggedUser);
+                console.log("user logged in status", isLoggedUser);
                 
-                if (isLoggedUser) router.push(redirect); 
+                if (!isLoggedUser) 
+                    router.push(redirect); 
             } catch (error) {
                 console.log("error in redirecting user", error);
             }
